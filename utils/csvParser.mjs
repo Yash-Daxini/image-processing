@@ -7,7 +7,14 @@ export const parseCSVToJSON = (filePath) => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
-      .on("data", (data) => results.push(data))
+      .on("data", (data) => {
+        if (data["Input Image Urls"]) {
+          data["Input Image Urls"] = data["Input Image Urls"]
+            .split(",")
+            .map((url) => url.trim().replace('"', "")); // Remove extra spaces/newlines
+        }
+        results.push(data);
+      })
       .on("end", () => {
         resolve(results);
       })
