@@ -5,6 +5,8 @@ import "dotenv/config.js";
 const app = express();
 const port = process.env.PORT;
 
+app.use(express.static("./outputImages"));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

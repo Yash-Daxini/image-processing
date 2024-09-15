@@ -1,7 +1,7 @@
 S. No.,Product Name,Input Image Urls
-1.,SKU1,  "https://www.public-image-url1.jpg,
- https://www.public-image-url2.jpg,
- https://www.public-image-url3.jpg"
-2., SKU2, "https://www.public-image-url1.jpg,
- https://www.public-image-url2.jpg,
- https://www.public-image-url3.jpg"
+1.,SKU1,  "https://res.cloudinary.com/practicaldev/image/fetch/s--_Qg6TGUZ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_100%2Cw_350/https://i.imgur.com/Dcrkjnf.png,
+ https://res.cloudinary.com/practicaldev/image/fetch/s--_Qg6TGUZ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_100%2Cw_350/https://i.imgur.com/Dcrkjnf.png,
+ https://tpc.googlesyndication.com/simgad/11356351266643316018?sqp=4sqPyQQrQikqJwhfEAEdAAC0QiABKAEwCTgDQPCTCUgAUAFYAWBfcAJ4AcUBLbKdPg&rs=AOga4qlL4L2kT2Yyn1m0ZYUW0xqXglaAGA"
+2., SKU2, "https://cdn.jsdelivr.net/gh/lovell/sharp@main/docs/image/sharp-logo.svg,
+ https://cdn.jsdelivr.net/gh/lovell/sharp@main/docs/image/sharp-logo.svg,
+ https://cdn.jsdelivr.net/gh/lovell/sharp@main/docs/image/sharp-logo.svg"

@@ -6,6 +6,7 @@ import Product from "../dbOperations/models/product.mjs";
 import Image from "../dbOperations/models/image.mjs";
 import Request from "../dbOperations/models/request.mjs";
 import { insertRecord } from "../dbOperations/insert.mjs";
+import { compressImage } from "../utils/compressImages.mjs";
 const router = express.Router();
 
 router.post("/", upload.single("file"), async (req, res) => {
@@ -13,7 +14,17 @@ router.post("/", upload.single("file"), async (req, res) => {
   let requestId = generateUniqueRequestId();
   await insertIntoDB(jsonData, requestId);
   res.json({ requestId });
+  await startImageCompression(jsonData);
 });
+
+let startImageCompression = async (products) => {
+  products.forEach(async (product) => {
+    let count = 0;
+    product["Input Image Urls"].forEach(async (image) => {
+      await compressImage(image, `${product["Product Name"]}-${count++}`);
+    });
+  });
+};
 
 let insertIntoDB = async (data, requestId) => {
   try {
