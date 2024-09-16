@@ -13,15 +13,12 @@ export const compressImage = async (url, compressedFileName) => {
     if (!fs.existsSync('./outputImages')) {
       fs.mkdirSync("./outputImages");
     }
-
-    const timestamp = new Date().toISOString().split("T")[0];
-    const ref = `${timestamp}-${compressedFileName}.webp`;
+    
+    const ref = `${compressedFileName}.webp`;
 
     await sharp(response.data)
       .webp({ quality: 50 })
       .toFile(`./outputImages/${ref}`);
-
-    console.log("Image compressed successfully!");
   } catch (error) {
     console.error("Error compressing image:", error);
   }
