@@ -1,8 +1,8 @@
 import { Parser } from "json2csv";
-import fs from "fs";
+import fs from "fs/promises";
 import "dotenv/config";
 
-export const convertJsonToCSV = (data, fileName) => {
+export const convertJsonToCSV = async (data, fileName) => {
   const csv = new Parser().parse(data);
-  fs.writeFileSync(`${process.env.OutputCSVPath}/${fileName}`, csv);
+  await fs.writeFile(`${process.env.OutputCSVPath}/${fileName}`, csv);
 };

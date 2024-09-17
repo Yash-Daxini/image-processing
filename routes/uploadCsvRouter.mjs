@@ -11,29 +11,36 @@ import {
   updateOutputImage,
   updateRequestStatus,
 } from "../dbOperations/update.mjs";
+import { convertJsonToCSV } from "../utils/jsontocsv.mjs";
 const router = express.Router();
 
 const imageMap = new Map();
+const inputImageMap = new Map();
 
 router.post("/", upload.single("file"), async (req, res) => {
   let jsonData = await parseCSVToJSON(req.file.path);
   let requestId = generateUniqueRequestId();
   res.json({ requestId });
   const insertedRequestId = await insertRequest(requestId);
-  const productId = await insertProduct(jsonData, insertedRequestId);
-  await insertImage(jsonData, productId);
-  await startImageCompression(jsonData);
+
+  await insertProductDetails(jsonData, insertedRequestId);
+
+  startImageCompression(jsonData);
+
+  await updateRequestStatus(requestId);
 
   await updateOutputImageUrl(imageMap);
 
-  await updateRequestStatus(requestId);
+  addOutputImageUrlsInOriginalJSON(imageMap, jsonData);
+
+  convertJsonToCSV(jsonData, requestId);
 });
 
-const startImageCompression = async (products) => {
-  products.forEach(async (product) => {
+const startImageCompression = (products) => {
+  products.forEach((product) => {
     let count = 0;
     product["Input Image Urls"].forEach(async (image) => {
-      const outputImageName = `${product["Product Name"]}-${count++}`;
+      const outputImageName = `${product["Product Name"]}-${count++}.webp`;
       imageMap.set(image, outputImageName);
       await compressImage(image, outputImageName);
     });
@@ -51,7 +58,7 @@ const insertRequest = async (requestId) => {
   }
 };
 
-const insertProduct = async (data, request_Id) => {
+const insertProductDetails = async (data, request_Id) => {
   data.forEach(async (element) => {
     let product = new Product(
       parseInt(request_Id),
@@ -59,16 +66,16 @@ const insertProduct = async (data, request_Id) => {
       element["Product Name"]
     );
 
-    return await insertRecord("Products", product);
+    let productId = await insertRecord("Products", product);
+    await insertImageForSpecificProduct(element, productId);
   });
 };
 
-const insertImage = async (data, product_Id) => {
-  data.forEach(async (element) => {
-    element["Input Image Urls"].forEach(async (element) => {
-      const image = new Image(parseInt(product_Id), element, null);
-      await insertRecord("Images", image);
-    });
+const insertImageForSpecificProduct = async (product, product_Id) => {
+  product["Input Image Urls"].forEach(async (element) => {
+    inputImageMap.set(element, parseInt(product["S. No."]));
+    const image = new Image(parseInt(product_Id), element, null);
+    await insertRecord("Images", image);
   });
 };
 
@@ -76,6 +83,18 @@ const updateOutputImageUrl = async (imageMap) => {
   for (const [key, value] of imageMap) {
     await updateOutputImage(key, value);
   }
+};
+
+const addOutputImageUrlsInOriginalJSON = (imageMap, jsonData) => {
+  jsonData.forEach((product) => {
+    product["Input Image Urls"].forEach((image) => {
+      let index = inputImageMap.get(image);
+      let value = imageMap.get(image);
+      if (!jsonData[index - 1]["Output Image Urls"])
+        jsonData[index - 1]["Output Image Urls"] = [value];
+      else jsonData[index - 1]["Output Image Urls"].push(value);
+    });
+  });
 };
 
 export default router;
