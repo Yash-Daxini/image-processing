@@ -1,24 +1,19 @@
 import sharp from "sharp";
 import axios from "axios";
-import fs from "fs";
+import "dotenv/config";
 
 export const compressImage = async (url, compressedFileName) => {
-
   try {
     const response = await axios({
       url,
       responseType: "arraybuffer",
     });
 
-    if (!fs.existsSync('./outputImages')) {
-      fs.mkdirSync("./outputImages");
-    }
-    
     const ref = `${compressedFileName}.webp`;
 
     await sharp(response.data)
       .webp({ quality: 50 })
-      .toFile(`./outputImages/${ref}`);
+      .toFile(`${process.env.OutputImagePath}/${ref}`);
   } catch (error) {
     console.error("Error compressing image:", error);
   }
