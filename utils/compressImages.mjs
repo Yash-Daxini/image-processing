@@ -9,7 +9,7 @@ export const compressImage = async (url, compressedFileName) => {
       responseType: "arraybuffer",
     });
 
-    const ref = `${compressedFileName}.webp`;
+    const ref = `${compressedFileName}`;
 
     await sharp(response.data)
       .webp({ quality: 50 })

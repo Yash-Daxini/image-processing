@@ -12,6 +12,8 @@ import {
   updateRequestStatus,
 } from "../dbOperations/update.mjs";
 import { convertJsonToCSV } from "../utils/jsontocsv.mjs";
+import "dotenv/config";
+
 const router = express.Router();
 
 const imageMap = new Map();
@@ -89,7 +91,7 @@ const addOutputImageUrlsInOriginalJSON = (imageMap, jsonData) => {
   jsonData.forEach((product) => {
     product["Input Image Urls"].forEach((image) => {
       let index = inputImageMap.get(image);
-      let value = imageMap.get(image);
+      let value = process.env.Domain + "/outputImages/" + imageMap.get(image);
       if (!jsonData[index - 1]["Output Image Urls"])
         jsonData[index - 1]["Output Image Urls"] = [value];
       else jsonData[index - 1]["Output Image Urls"].push(value);
