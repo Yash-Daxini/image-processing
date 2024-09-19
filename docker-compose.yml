@@ -1,0 +1,17 @@
+version: '1.0'
+
+services:
+  backend:
+    container_name: ImageProcessing
+    image: node:18-alpine
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app               
+      - ./upload:/app/upload
+      - ./public/outputImages:/app/public/outputImages
+      - ./public/outputCSVs:/app/public/outputCSVs
+    working_dir: /app
+    command: "npm install && node index.mjs"     
+
+

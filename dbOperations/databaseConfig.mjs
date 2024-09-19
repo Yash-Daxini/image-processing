@@ -1,14 +1,11 @@
 import "dotenv/config";
 
 const config = {
-    server: process.env.DB_SERVER,
-    database: process.env.DB_DATABASE,
-    driver: "msnodesqlv8",
-    options: {
-      trustedConnection: true,
-      enableArithAbort: true,
-      encrypt: false,
-    },
-  };
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  TrustServerCertificate:true
+};
 
-  export default config;
+export default config;
